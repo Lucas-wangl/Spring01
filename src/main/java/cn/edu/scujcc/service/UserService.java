@@ -6,6 +6,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import cn.edu.scujcc.UserExistException;
 import cn.edu.scujcc.dao.UserRepository;
 import cn.edu.scujcc.model.User;
 
@@ -21,11 +22,15 @@ public class UserService {
 	 * @param user
 	 * @return
 	 */
-	public User createUser(User user) {
+	public User createUser(User user) throws UserExistException{
 		logger.debug("用户注册："+user);
 		User result = null;
 		//TODO 1.保存前把用户密码加密
-		//TODO 2.检查用户名是否已经存在，如果存在则不允许注册
+		//检查用户名是否已经存在，如果存在则不允许注册
+		User u = repo.findOneByUsername(user.getUsername());
+		if (u != null) {//说明该用户名已被使用
+			throw new UserExistException();
+		}
 		result = repo.save(user);
 		return result;
 	}

@@ -1,6 +1,6 @@
 package cn.edu.scujcc.model;
 
-import java.time.LocalDate;
+
 import java.time.LocalDateTime;
 
 import org.springframework.data.annotation.Id;
@@ -18,7 +18,7 @@ public class User {
 	private String password;
 	private String phone;
 	private String gender;
-	private LocalDate birthday;
+	private LocalDateTime birthday;
 	private LocalDateTime lastLogin;
 	private String lastIp;
 	public String getId() {
@@ -51,10 +51,10 @@ public class User {
 	public void setGender(String gender) {
 		this.gender = gender;
 	}
-	public LocalDate getBirthday() {
+	public LocalDateTime getBirthday() {
 		return birthday;
 	}
-	public void setBirthday(LocalDate birthday) {
+	public void setBirthday(LocalDateTime birthday) {
 		this.birthday = birthday;
 	}
 	public LocalDateTime getLastLogin() {
