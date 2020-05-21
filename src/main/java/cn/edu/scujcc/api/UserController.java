@@ -3,8 +3,6 @@ package cn.edu.scujcc.api;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.cache.Cache;
-import org.springframework.cache.CacheManager;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -22,10 +20,6 @@ import cn.edu.scujcc.service.UserService;
 public class UserController {
 	public static final Logger logger = LoggerFactory.getLogger(UserController.class);
 
-	
-	@Autowired
-	private CacheManager cacheManager;
-	
 	@Autowired
 	private UserService service;
 	@PostMapping("/register")
@@ -34,7 +28,7 @@ public class UserController {
 		logger.debug("即将注册用户，用户数据："+u);
 		try {
 			result = result.ok();
-			result.setDate(service.createUser(u));
+			result.setData(service.createUser(u));
 		}catch (UserExistException e) {
 			logger.error("用户名已经存在！",e);
 			result = result.error();
@@ -44,14 +38,12 @@ public class UserController {
 	}
 	
 	@GetMapping("/login/{username}/{password}")
-	public Result<User> login(@PathVariable String username, @PathVariable String password) {
-		Result<User> result = new Result<User>();
+	public Result<String> login(@PathVariable String username, @PathVariable String password) {
+		Result<String> result = new Result<>();
 		boolean status = service.checkUser(username, password);
 		if (status) {//登录成功
 			result = result.ok();
-			//把用户存入缓存
-			Cache cache = cacheManager.getCache(User.CACHE_NAME);
-			cache.put("current_user",username);
+			result.setData(service.checkIn(username));
 		}else {
 			result = result.error();
 		}
